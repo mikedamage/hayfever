@@ -42,7 +42,14 @@ var config = {
 };
 
 var files = {
-  scripts: 'source/js/**/*.js',
+  scripts: {
+    all: 'source/js/**/*.js',
+    modules: [
+      'source/js/popup.js',
+      'source/js/background.js',
+      'source/js/options.js'
+    ]
+  },
   styles: 'source/css/**/*.scss',
   vendorCSS: [
     'node_modules/font-awesome/css/*.css'
@@ -56,6 +63,14 @@ var files = {
   ],
   packageJSON: './package.json',
   html: 'source/**/*.html'
+};
+
+var build = {
+  root: 'build',
+  js: 'build/js',
+  css: 'build/css',
+  img: 'build/img',
+  fonts: 'build/fonts'
 };
 
 gulp.task('help', $.helptext({
@@ -88,7 +103,7 @@ gulp.task('images', [ 'images:vendor' ], function() {
       svgoPlugins: [ { removeViewBox: false } ],
       use: [ pngcrush() ]
     })))
-    .pipe(gulp.dest('build/img'))
+    .pipe(gulp.dest(build.img))
     .pipe($.size({ title: 'images' }));
 });
 
@@ -99,34 +114,106 @@ gulp.task('images:vendor', function() {
   }
 
   return gulp.src(files.vendorImages)
-    .pipe(gulp.dest('build/img'))
+    .pipe(gulp.dest(build.img))
     .pipe($.size({ title: 'vendorImages' }));
 });
 
 gulp.task('fonts', [ 'fonts:vendor' ], function() {
-
+  return gulp.src(files.fonts)
+    .pipe(gulp.dest(build.fonts))
+    .pipe($.size({ title: 'fonts' }));
 });
 
 gulp.task('fonts:vendor', function() {
+  if (!files.vendorFonts.length) {
+    $.util.log(chalk.magenta('No vendor fonts. Skipping.'));
+    return;
+  }
 
+  return gulp.src(files.vendorFonts)
+    .pipe(gulp.dest(build.fonts))
+    .pipe($.size({ title: 'vendorFonts' }));
 });
 
 gulp.task('styles', [ 'scsslint', 'styles:vendor' ], function() {
-
+  return gulp.src(files.styles)
+    .pipe($.rubySass(config.sass))
+    .on('error', function(err) { $.util.log(chalk.red(err)); })
+    .pipe(gulp.dest(build.css))
+    .pipe($.size({ title: 'styles' }));
 });
 
 gulp.task('styles:vendor', function() {
+  if (!files.vendorCSS.length) {
+    $.util.log(chalk.magenta('No vendor styles. Skipping.'));
+    return;
+  }
 
+  return gulp.src(files.vendorCSS)
+    .pipe(gulp.dest(build.css))
+    .pipe($.size({ title: 'vendorStyles' }));
 });
 
 gulp.task('scsslint', function() {
-
+  return gulp.src(files.styles)
+    .pipe($.scsslint('.scss-lint.yml'))
+    .pipe($.scsslint.reporter());
 });
 
-gulp.task('scripts', [ 'scripts:vendor' ], function() {
-
+gulp.task('html', function() {
+  return gulp.src(files.html)
+    .pipe(gulp.dest(build.root))
+    .pipe($.size({ title: 'html' }));
 });
+
+var compileModule = function(input, intermediate, sourcemap) {
+  return function() {
+    return gulp.src(input)
+      .pipe($.browserify(config.browserify))
+      .pipe(transform(function() { return exorcist(intermediate); }))
+      .pipe($.if(isProduction, $.uglifyjs({
+        inSourceMap: intermediate,
+        outSourceMap: sourcemap
+      })))
+      .pipe($.size({ title: path.basename(input) }))
+      .pipe(gulp.dest(build.js));
+  };
+};
+
+gulp.task('scripts:popup', compileModule(
+  'source/js/popup.js',
+  'build/js/popup.browserify.map',
+  'build/js/popup.js.map'
+));
+
+gulp.task('scripts:options', compileModule(
+  'source/js/options.js',
+  'build/js/options.browserify.map',
+  'build/js/options.js.map'
+));
+
+gulp.task('scripts:background', compileModule(
+  'source/js/background.js',
+  'build/js/background.browserify.js',
+  'build/js/background.js.map'
+));
+
+gulp.task('scripts', [ 'scripts:vendor', 'scripts:popup', 'scripts:options', 'scripts:background' ]);
 
 gulp.task('scripts:vendor', function() {
+  if (!files.vendorJS.length) {
+    $.util.log(chalk.magenta('No vendor JS. Skipping.'));
+    return;
+  }
 
+  return gulp.src(files.vendorJS)
+    .pipe(gulp.dest(build.js))
+    .pipe($.size({ title: 'vendorJS' }));
 });
+
+gulp.task('totalsize', function() {
+  return gulp.src('build/**/*')
+    .pipe($.size({ title: 'totalSize' }));
+});
+
+module.exports = gulp;
