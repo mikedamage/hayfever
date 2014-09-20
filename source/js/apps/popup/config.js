@@ -1,6 +1,6 @@
 /**
  * Hayfever for Harvest
- * Background Application Configuration
+ * Popup Application Configuration
  */
 
 (function(window, undefined) {

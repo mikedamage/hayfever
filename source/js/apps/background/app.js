@@ -1,6 +1,6 @@
 /**
  * Hayfever for Harvest
- * Options Application Module
+ * Background Application Module
  */
 
 (function(window, undefined) {
@@ -10,13 +10,13 @@
   var $ = require('jquery');
   var angular = require('angular');
 
-  angular.module('hayfever.Options', [])
+  angular.module('hayfever.Background', [])
     //.config(require('./config'))
     .constant('version', require('../../../../package.json').version);
 
   $(function() {
     var appElement = angular.element(document.documentElement);
-    angular.bootstrap(appElement, [ 'hayfever.Options' ]);
+    angular.bootstrap(appElement, [ 'hayfever.Background' ]);
   });
 
 })(window);

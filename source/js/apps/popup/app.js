@@ -1,6 +1,6 @@
 /**
  * Hayfever for Harvest
- * Options Application Module
+ * Popup Application Module
  */
 
 (function(window, undefined) {
@@ -10,13 +10,13 @@
   var $ = require('jquery');
   var angular = require('angular');
 
-  angular.module('hayfever.Options', [])
+  angular.module('hayfever.Popup', [])
     //.config(require('./config'))
     .constant('version', require('../../../../package.json').version);
 
   $(function() {
     var appElement = angular.element(document.documentElement);
-    angular.bootstrap(appElement, [ 'hayfever.Options' ]);
+    angular.bootstrap(appElement, [ 'hayfever.Popup' ]);
   });
 
 })(window);

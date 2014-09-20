@@ -45,9 +45,9 @@ var files = {
   scripts: {
     all: 'source/js/**/*.js',
     modules: [
-      'source/js/popup.js',
-      'source/js/background.js',
-      'source/js/options.js'
+      'source/js/apps/popup/app.js',
+      'source/js/apps/background/app.js',
+      'source/js/apps/options/app.js'
     ]
   },
   styles: 'source/css/**/*.scss',
@@ -181,24 +181,26 @@ var compileModule = function(input, intermediate, sourcemap) {
 };
 
 gulp.task('scripts:popup', compileModule(
-  'source/js/popup.js',
-  'build/js/popup.browserify.map',
-  'build/js/popup.js.map'
+  'source/js/apps/popup/app.js',
+  'build/js/apps/popup/app.browserify.map',
+  'build/js/apps/popup/app.js.map'
 ));
 
 gulp.task('scripts:options', compileModule(
-  'source/js/options.js',
-  'build/js/options.browserify.map',
-  'build/js/options.js.map'
+  'source/js/apps/options/app.js',
+  'build/js/apps/options/app.browserify.map',
+  'build/js/apps/options/app.js.map'
 ));
 
 gulp.task('scripts:background', compileModule(
-  'source/js/background.js',
-  'build/js/background.browserify.js',
-  'build/js/background.js.map'
+  'source/js/apps/background/app.js',
+  'build/js/apps/background/app.browserify.js',
+  'build/js/apps/background/app.js.map'
 ));
 
-gulp.task('scripts', [ 'scripts:vendor', 'scripts:popup', 'scripts:options', 'scripts:background' ]);
+gulp.task('scripts', function() {
+  return runSequence([ 'scripts:vendor', 'scripts:popup', 'scripts:options', 'scripts:background' ]);
+});
 
 gulp.task('scripts:vendor', function() {
   if (!files.vendorJS.length) {
@@ -214,6 +216,15 @@ gulp.task('scripts:vendor', function() {
 gulp.task('totalsize', function() {
   return gulp.src('build/**/*')
     .pipe($.size({ title: 'totalSize' }));
+});
+
+gulp.task('manifest', function() {
+  return gulp.src('source/manifest.json')
+    .pipe(gulp.dest('build'));
+});
+
+gulp.task('default', function() {
+  return runSequence([ 'html', 'styles', 'scripts', 'fonts', 'images' ], 'totalsize');
 });
 
 module.exports = gulp;
