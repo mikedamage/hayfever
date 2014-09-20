@@ -39,6 +39,11 @@
 
   };
 
+  Harvest.authString = function(username, password) {
+    var authString = '' + username + ':' + password;
+    return btoa(authString);
+  };
+
   Harvest.prototype._buildURL = function() {
     var url = this.fullURL; 
 
@@ -125,12 +130,6 @@
     return $.ajax(url, opts);
   };
 
-  module.exports = {
-    authString: function(username, password) {
-      var authString = '' + username + ':' + password;
-      return btoa(authString);
-    },
-    Harvest: Harvest
-  };
+  module.exports = Harvest;
 
 })(window);
