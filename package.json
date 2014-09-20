@@ -61,6 +61,7 @@
     "font-awesome": "^4.2.0",
     "jquery": "^2.1.1",
     "lodash": "^2.4.1",
-    "lodash.foreach": "^2.4.1"
+    "lodash.foreach": "^2.4.1",
+    "moment": "^2.8.3"
   }
 }
