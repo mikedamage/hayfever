@@ -1,0 +1,9 @@
+# Misc. Files
+Session.vim
+.DS_Store
+*.swp
+*.swo
+
+# Directories
+/build
+/node_modules
