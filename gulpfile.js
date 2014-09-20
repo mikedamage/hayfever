@@ -166,36 +166,39 @@ gulp.task('html', function() {
     .pipe($.size({ title: 'html' }));
 });
 
-var compileModule = function(input, intermediate, sourcemap) {
+var compileModule = function(input, intermediate, sourcemap, output) {
   return function() {
     return gulp.src(input)
       .pipe($.browserify(config.browserify))
-      .pipe(transform(function() { return exorcist(intermediate); }))
+      //.pipe(transform(function() { return exorcist(intermediate); }))
       .pipe($.if(isProduction, $.uglifyjs({
         inSourceMap: intermediate,
         outSourceMap: sourcemap
       })))
       .pipe($.size({ title: path.basename(input) }))
-      .pipe(gulp.dest(build.js));
+      .pipe(gulp.dest(path.join(build.js, output)));
   };
 };
 
 gulp.task('scripts:popup', compileModule(
   'source/js/apps/popup/app.js',
   'build/js/apps/popup/app.browserify.map',
-  'build/js/apps/popup/app.js.map'
+  'build/js/apps/popup/app.js.map',
+  'popup'
 ));
 
 gulp.task('scripts:options', compileModule(
   'source/js/apps/options/app.js',
   'build/js/apps/options/app.browserify.map',
-  'build/js/apps/options/app.js.map'
+  'build/js/apps/options/app.js.map',
+  'options'
 ));
 
 gulp.task('scripts:background', compileModule(
   'source/js/apps/background/app.js',
   'build/js/apps/background/app.browserify.js',
-  'build/js/apps/background/app.js.map'
+  'build/js/apps/background/app.js.map',
+  'background'
 ));
 
 gulp.task('scripts', function() {
@@ -221,6 +224,15 @@ gulp.task('totalsize', function() {
 gulp.task('manifest', function() {
   return gulp.src('source/manifest.json')
     .pipe(gulp.dest('build'));
+});
+
+gulp.task('clean', function(cb) {
+  return del('build/**/*', function(err) {
+    if (err) {
+      console.trace(err);
+    }
+    cb();
+  });
 });
 
 gulp.task('default', function() {
