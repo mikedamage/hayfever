@@ -7,9 +7,8 @@
 
   'use strict';
 
+  var $           = require('jquery');
   var moment      = require('moment');
-  var clock       = require('./clock');
-  var slugger     = require('./slugger');
   var forEach     = require('lodash.foreach');
   var isObject    = require('lodash.isobject');
   var isUndefined = require('lodash.isundefined');
