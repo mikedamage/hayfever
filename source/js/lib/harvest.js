@@ -44,7 +44,7 @@
   };
 
   Harvest.prototype._buildURL = function() {
-    var url = this.fullURL; 
+    var url = this.fullURL;
 
     forEach(arguments, function(arg) {
       url += '/' + arg;
