@@ -182,22 +182,22 @@ var compileModule = function(input, intermediate, sourcemap, output) {
 
 gulp.task('scripts:popup', compileModule(
   'source/js/apps/popup/app.js',
-  'build/js/apps/popup/app.browserify.map',
-  'build/js/apps/popup/app.js.map',
+  'app.browserify.map',
+  'app.js.map',
   'popup'
 ));
 
 gulp.task('scripts:options', compileModule(
   'source/js/apps/options/app.js',
-  'build/js/apps/options/app.browserify.map',
-  'build/js/apps/options/app.js.map',
+  'app.browserify.map',
+  'app.js.map',
   'options'
 ));
 
 gulp.task('scripts:background', compileModule(
   'source/js/apps/background/app.js',
-  'build/js/apps/background/app.browserify.js',
-  'build/js/apps/background/app.js.map',
+  'app.browserify.js',
+  'app.js.map',
   'background'
 ));
 
