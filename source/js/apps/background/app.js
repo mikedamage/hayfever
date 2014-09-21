@@ -8,15 +8,7 @@
   'use strict';
 
   var $ = require('jquery');
-  var angular = require('angular');
+  var BackgroundApplication = require('./lib/background-application');
 
-  angular.module('hayfever.Background', [])
-    //.config(require('./config'))
-    .constant('version', require('../../../../package.json').version);
-
-  $(function() {
-    var appElement = angular.element(document.documentElement);
-    angular.bootstrap(appElement, [ 'hayfever.Background' ]);
-  });
 
 })(window);
