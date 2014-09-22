@@ -202,7 +202,7 @@ gulp.task('scripts:background', compileModule(
 ));
 
 gulp.task('scripts', function() {
-  return runSequence([ 'scripts:vendor', 'scripts:popup', 'scripts:options', 'scripts:background' ]);
+  return runSequence('scripts:vendor', 'scripts:background', 'scripts:popup', 'scripts:options');
 });
 
 gulp.task('scripts:vendor', function() {
