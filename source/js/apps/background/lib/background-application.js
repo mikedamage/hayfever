@@ -3,14 +3,18 @@
  * Background Application Module
  */
 
+/* global chrome */
+
 (function(window, undefined) {
 
   'use strict';
 
-  var logger = require('bragi-browser');
-  var Harvest = require('../../../lib/harvest');
+  var logger      = require('bragi-browser');
+  var Harvest     = require('../../../lib/harvest');
+  var manifest    = require('../../../../manifest.json');
 
   var BackgroundApplication = function BackgroundApplication(subdomain, authString) {
+
     // Force single instance per runtime
     if (BackgroundApplication.prototype._singletonInstance) {
       return BackgroundApplication.prototype._singletonInstance;
@@ -24,7 +28,20 @@
     var _authString = String(authString);
 
     // Public properties
-    this.client = new Harvest(_subdomain, _authString);
+    this.version       = manifest.version;
+    this.intervals     = {
+      refresh: 0,
+      badge: 0
+    };
+    this.authorized    = false;
+    this.client        = new Harvest(_subdomain, _authString);
+    this.totalHours    = 0.0;
+    this.currentHouse  = 0.0;
+    this.currentTask   = null;
+    this.refreshTime   = 36e3;
+    this.todaysEntries = [];
+    this.projects      = [];
+    this.timerRunning  = false;
 
     // this.subdomain getter + setter
     Object.defineProperty(this, 'subdomain', {
@@ -54,8 +71,29 @@
       }
     });
 
+    chrome.browserAction.setTitle({ title: 'Hayfever for Harvest' });
+
+    if (_subdomain && _authString) {
+      this.start();
+    }
 
     logger.log('bgApp:startup', 'Background app instance initialized');
+  };
+
+  BackgroundApplication.prototype.start = function start() {
+    if (this.intervals.refresh) {
+      logger.log('bgApp:intervals', 'Clearing previous refresh interval');
+      window.clearInterval(this.intervals.refresh);
+      this.intervals.refresh = 0;
+    }
+
+    logger.log('bgApp:intervals', 'Setting refresh interval to every %d ms', this.refreshTime);
+
+    this.intervals.refresh = window.setInterval(this.refreshHours, this.refreshTime);
+  };
+
+  BackgroundApplication.prototype.refreshHours = function refreshHours() {
+    logger.log('bgApp:refresh', 'Refreshing data from Harvest API');
   };
 
   module.exports = BackgroundApplication;
