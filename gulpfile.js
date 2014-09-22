@@ -29,7 +29,8 @@ if ($.util.env.dev) {
 var config = {
   browserify: {
     insertGlobals: !isProduction,
-    debug: true
+    debug: true,
+    paths: [ 'bower_components' ]
   },
   sass: {
     style: isProduction ? 'compressed' : 'expanded',
