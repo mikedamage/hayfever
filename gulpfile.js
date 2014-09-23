@@ -31,8 +31,12 @@ var config = {
     shim: {
       angular: {
         path: './bower_components/angular/angular.js',
-        exports: 'angular'//,
-        //depends: [ 'jquery' ]
+        exports: 'angular',
+        depends: [ 'jquery' ]
+      },
+      jquery: {
+        path: './bower_components/jquery/dist/jquery.js',
+        exports: '$'
       }
     }
   },

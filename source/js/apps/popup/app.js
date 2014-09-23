@@ -10,6 +10,8 @@
   var $ = require('jquery');
   var angular = require('angular');
 
+  console.log(angular);
+
   angular.module('hayfever.Popup', [])
     //.config(require('./config'))
     .constant('version', require('../../../../package.json').version);
