@@ -27,7 +27,14 @@ if ($.util.env.dev) {
 var config = {
   browserify: {
     insertGlobals: !isProduction,
-    debug: true
+    debug: true,
+    shim: {
+      angular: {
+        path: './bower_components/angular/angular.js',
+        exports: 'angular'//,
+        //depends: [ 'jquery' ]
+      }
+    }
   },
   sass: {
     style: isProduction ? 'compressed' : 'expanded',
