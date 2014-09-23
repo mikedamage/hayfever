@@ -3,9 +3,9 @@
   "version": "0.4.0",
   "dependencies": {
     "angular": "~1.2.25",
-    "bragi-browser": "~0.0.7",
     "moment": "~2.8.3",
     "q": "1.0.1",
-    "font-awesome": "~4.2.0"
+    "font-awesome": "~4.2.0",
+    "jquery": "2.1.1"
   }
 }

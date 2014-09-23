@@ -57,6 +57,7 @@
     "vinyl-transform": "0.0.1"
   },
   "dependencies": {
+    "bragi-browser": "0.0.7",
     "lodash": "^2.4.1",
     "lodash.foreach": "^2.4.1",
     "lodash.isdate": "^2.4.1",
@@ -65,5 +66,11 @@
     "lodash.isobject": "^2.4.1",
     "lodash.isstring": "^2.4.1",
     "lodash.isundefined": "^2.4.1"
+  },
+  "browser": {
+    "moment": "./bower_components/moment/moment.js",
+    "q": "./bower_components/q/q.js",
+    "angular": "./bower_components/angular/angular.js",
+    "jquery": "./bower_components/jquery/dist/jquery.js"
   }
 }
