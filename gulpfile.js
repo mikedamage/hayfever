@@ -8,17 +8,15 @@
 'use strict';
 
 var gulp        = require('gulp');
-var _           = require('lodash');
 var $           = require('gulp-load-plugins')({ lazy: true });
-var fs          = require('fs');
 var path        = require('path');
 var del         = require('del');
 var runSequence = require('run-sequence');
 var pngcrush    = require('imagemin-pngcrush');
 var chalk       = require('chalk');
-var exorcist    = require('exorcist');
-var transform   = require('vinyl-transform');
-var glob        = require('glob');
+//var exorcist    = require('exorcist');
+//var transform   = require('vinyl-transform');
+//var glob        = require('glob');
 
 var isProduction = true;
 
@@ -29,8 +27,7 @@ if ($.util.env.dev) {
 var config = {
   browserify: {
     insertGlobals: !isProduction,
-    debug: true,
-    paths: [ 'bower_components' ]
+    debug: true
   },
   sass: {
     style: isProduction ? 'compressed' : 'expanded',
@@ -53,17 +50,22 @@ var files = {
   },
   styles: 'source/css/**/*.scss',
   vendorCSS: [
-    'node_modules/font-awesome/css/*.css'
+    'bower_components/font-awesome/css/*.css'
   ],
   vendorJS: [],
   vendorImages: [],
   images: 'source/img/**/*',
   fonts: 'source/fonts/**/*',
   vendorFonts: [
-    'node_modules/font-awesome/fonts/*'
+    'bower_components/font-awesome/fonts/*'
   ],
   packageJSON: './package.json',
-  html: 'source/**/*.html'
+  html: 'source/**/*.html',
+  versions: [
+    'package.json',
+    'bower.json',
+    'source/manifest.json'
+  ]
 };
 
 var build = {
@@ -235,6 +237,33 @@ gulp.task('clean', function(cb) {
     cb();
   });
 });
+
+/*
+// [todo] - These almost work. Manifest saves to root though.
+gulp.task('bump:patch', function() {
+  $.util.log(chalk.bold('Bumping patch version'));
+
+  return gulp.src(files.versions)
+    .pipe($.bump({ type: 'patch' }))
+    .pipe(gulp.dest('./'));
+});
+
+gulp.task('bump:minor', function() {
+  $.util.log(chalk.bold('Bumping minor version'));
+
+  return gulp.src(files.versions)
+    .pipe($.bump({ type: 'minor' }))
+    .pipe(gulp.dest('./'));
+});
+
+gulp.task('bump:major', function() {
+  $.util.log(chalk.bold('Bumping major version'));
+
+  return gulp.src(files.versions)
+    .pipe($.bump({ type: 'major' }))
+    .pipe(gulp.dest('./'));
+});
+*/
 
 gulp.task('default', function() {
   return runSequence([ 'html', 'styles', 'scripts', 'fonts', 'images' ], 'totalsize');
