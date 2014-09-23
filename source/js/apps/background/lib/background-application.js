@@ -77,6 +77,8 @@
       this.start();
     }
 
+    this._registerListeners();
+
     logger.log('bgApp:startup', 'Background app instance initialized');
   };
 
@@ -94,6 +96,60 @@
 
   BackgroundApplication.prototype.refreshHours = function refreshHours() {
     logger.log('bgApp:refresh', 'Refreshing data from Harvest API');
+
+    var self = this;
+    var deferred = Q.defer();
+
+    // [todo] - resolve w/ object that has the following properties:
+    // + authorized
+    // + projects
+    // + clients
+    // + timers
+    // + totalHours
+    // + currentHours
+    // + currentTask
+    // + harvestURL
+    // + preferences
+
+    return deferred.promise;
+  };
+
+  BackgroundApplication.prototype._registerListeners = function _registerListeners() {
+    logger.log('bgApp:listeners', 'Registering async message listeners');
+
+    var self = this;
+
+    chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+      var methods = {
+        refreshHours: function() {
+          return self.refreshHours().then(sendResponse);
+        },
+        getEntries: function() {
+          return sendResponse(self.getEntries());
+        },
+        addTimer: function() {
+          var result;
+
+          if (request.activeTimerID !== 0) {
+            result = self.updateEntry(request.activeTimerID, request.task);
+          } else {
+            result = self.addEntry(request.task);
+          }
+
+          return result.then(sendResponse);
+        }
+      };
+
+      logger.log('bgApp:messages', 'Got message: %O', request);
+
+      if (methods.hasOwnProperty(request.method)) {
+        methods[request.method].call(self);
+        return true;
+      }
+
+      logger.log('bgApp:messages', 'Unknown method %s. Ignoring.', request.method);
+      return false;
+    });
   };
 
   module.exports = BackgroundApplication;
